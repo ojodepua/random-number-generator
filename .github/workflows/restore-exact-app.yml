@@ -1,0 +1,26 @@
+name: Restore exact App.jsx
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore exact App.jsx
+        run: |
+          base64 -d App.source.gz.b64 | gzip -d > App.jsx
+          rm App.source.gz.b64
+          rm .github/workflows/restore-exact-app.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add App.jsx .github/workflows/restore-exact-app.yml App.source.gz.b64
+          git commit -m "fix: restaurar App.jsx exacto"
+          git push
